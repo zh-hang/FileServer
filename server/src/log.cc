@@ -1,5 +1,6 @@
 #include "log.h"
-std::string filepath="log.txt";
+
+static std::string filepath="log.txt";
 
 void writeLog(std::string msg){
 	time_t now(time(0));

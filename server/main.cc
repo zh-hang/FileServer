@@ -9,6 +9,6 @@
 
 int main(){
 	Connection server(UDP_TYPE);
-	writeLog("test\n");
+	server.listen();
 	return 0;
 }

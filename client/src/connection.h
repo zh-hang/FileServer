@@ -22,11 +22,11 @@ class Connection{
 	public:
 		int fd;
 		struct sockaddr_in addr;
-		Connection(int type);
+		Connection(int type,std::string server_addr);
 		~Connection(){
 			close(this->fd);
 		}
-		void listen();
+		void send();
 		
 };
 
