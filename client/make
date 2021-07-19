@@ -1,5 +1,5 @@
-if !(test -d debug);then
+if ! (test -d debug);then
 	mkdir debug
 fi
-g++ src/connection.cc main.cc -o debug/server
+g++ src/connection.cc main.cc -o debug/cleint
 	

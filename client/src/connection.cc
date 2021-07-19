@@ -15,10 +15,9 @@ Connection::Connection(int type,std::string server_addr){
 }
 
 void Connection::send(){
-	char buf[BUFF_SIZE];
-	std::cin>>buf;
+	char buf[BUFF_SIZE]="hello\n";
 	std::cout<<buf;
-	sendto(fd,buf,BUFF_SIZE,0,(struct sockaddr*)&this->addr,sizeof(this->addr));
+	sendto(this->fd,buf,BUFF_SIZE,0,(struct sockaddr*)&this->addr,sizeof(this->addr));
 	ssize_t s=recvfrom(fd,buf,sizeof(buf),0,NULL,NULL);
 	if(s>0)
 		std::cout<<buf;
