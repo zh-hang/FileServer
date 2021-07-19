@@ -6,6 +6,8 @@
 #include <string.h>
 #include <unistd.h>
 #include "log.h"
+#include <arpa/inet.h>
+#include <iostream>
 
 #ifndef CONNECTION_H
 #define CONNECTION_H

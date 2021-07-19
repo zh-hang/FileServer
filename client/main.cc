@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-    Connection conn(UDP_TYPE,127.0.0.1);
+    Connection conn(UDP_TYPE,"127.0.0.1");
     conn.send();
     return 0;
 }

@@ -5,7 +5,9 @@
 #include <netdb.h>
 #include <string.h>
 #include <unistd.h>
-#include "log.h"
+#include <string>
+#include <iostream>
+#include <arpa/inet.h>
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
