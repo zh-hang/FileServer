@@ -8,6 +8,7 @@
 #include "log.h"
 #include <arpa/inet.h>
 #include <iostream>
+#include <fstream>
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
@@ -21,15 +22,16 @@ typedef int conn_type;
 #define UDP_TYPE 1
 
 class Connection{
-	public:
-		int fd;
-		struct sockaddr_in addr;
-		Connection(int type);
-		~Connection(){
-			close(this->fd);
-		}
-		void listen();
-		
+public:
+	int fd;
+	struct sockaddr_in addr;
+	Connection(int type);
+	~Connection(){
+		close(this->fd);
+	}
+	void listen();
+private:
+	void transFile(struct sockaddr*client);
 };
 
 #endif

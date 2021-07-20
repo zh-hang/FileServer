@@ -14,6 +14,6 @@ int main(int argc, char* argv[])
     if(argc==2)
         address=argv[1];
     Connection conn(UDP_TYPE,address);
-    conn.send();
+    conn.transFile();
     return 0;
 }
