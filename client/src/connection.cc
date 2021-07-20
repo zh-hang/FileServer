@@ -33,7 +33,7 @@ void Connection::transFile()
 			bzero(buf,BUFF_SIZE);
 			s = recvfrom(fd, buf, sizeof(buf), 0, NULL, NULL);
 			if (s > 0 && buf[0] == 't')
-				outfile << buf + 1;
+				outfile.write(buf + 1,BUFF_SIZE-1);
 			else
 				break;
 		}
