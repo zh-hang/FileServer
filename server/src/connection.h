@@ -5,15 +5,15 @@
 #include <netdb.h>
 #include <string.h>
 #include <unistd.h>
-#include "log.h"
 #include <arpa/inet.h>
 #include <iostream>
 #include <fstream>
 
+#include "log.h"
+
 #ifndef CONNECTION_H
 #define CONNECTION_H
 
-#define SERVER_PORT 12345
 #define BUFF_SIZE 4086
 #define QUEQUE_SIZE 10
 
@@ -23,14 +23,19 @@ typedef int conn_type;
 
 class Connection{
 public:
-	int fd;
-	struct sockaddr_in addr;
-	Connection(int type);
+	Connection(int type=TCP_TYPE);
 	~Connection(){
 		close(this->fd);
 	}
 	void listen();
+	int accept();
+	static void sendMsg(int connfd,const std::string &msg);
+	static std::string recvMsg(int connfd);
 private:
+
+	int fd;
+	conn_type type;
+	struct sockaddr_in addr;
 	void transFile(struct sockaddr*client);
 };
 
