@@ -6,12 +6,18 @@
 #include <string.h>
 #include "src/log.h"
 #include "src/connection.h"
+#include "src/fileManager.h"
 
 #define UDP_PORT 12345
 #define TCP_PORT 23456
 
 int main(){
-	Connection server(TCP_TYPE,TCP_PORT);
-	server.listen();
+	FileManager fm();
+	Connection main_connection();
+	while(true){
+		int fd=main_connection.accept();
+		Connection::sendMsg(fd,"have received.\n");
+		close(fd);
+	}
 	return 0;
 }
