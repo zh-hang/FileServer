@@ -10,8 +10,10 @@
 #include <arpa/inet.h>
 #include <fstream>
 
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#include "../../include/connection.h"
+
+#ifndef CLIENT_CONNECTION_H
+#define CLIENT_CONNECTION_H
 
 #define SERVER_PORT 12345
 #define BUFF_SIZE 4086
@@ -24,14 +26,11 @@ typedef int conn_type;
 class Connection
 {
 public:
-	int fd;
-	struct sockaddr_in addr;
 	Connection(int type, std::string server_addr);
 	~Connection()
 	{
 		close(this->fd);
 	}
-	void sendFile();
 
 private:
 };

@@ -38,7 +38,6 @@ int Connection::accept(){
 
 void Connection::sendFileUDP(std::string filename){
 	std::ifstream infile(filename, std::ios::in);
-	sendto(this->fd, filename.c_str(), filename.length(), 0, client, sizeof(*client));
 	std::cout << "start transport file.\n";
 	char buf[BUFF_SIZE];
 	while (infile)
@@ -60,7 +59,6 @@ void Connection::recvFileUDP(std::string filename){
 	char buf[BUFF_SIZE];
 	std::ofstream outfile(filename, std::ios::out);
 	bzero(buf,BUFF_SIZE);
-	sendto(this->fd, filename.c_str(), BUFF_SIZE, 0, (struct sockaddr *)&this->addr, sizeof(this->addr));
 	ssize_t s;
 	do{
 		s = recvfrom(fd, buf, sizeof(buf), 0, NULL, NULL);

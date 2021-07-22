@@ -13,7 +13,7 @@
 
 int main(){
 	FileManager fm();
-	Connection main_connection();
+	ServerConnection main_connection();
 	while(true){
 		int fd=main_connection.accept();
 		Connection::sendMsg(fd,"have received.\n");
