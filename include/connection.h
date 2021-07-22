@@ -27,12 +27,11 @@ public:
 	~Connection(){
 		close(this->fd);
 	}
-	void listen();
 	int accept();
-	int sendFileUDP();
-	int recvFileUDP();
-	int sendFileTCP();
-	int recvFileTCP();
+	void sendFileUDP();
+	void recvFileUDP();
+	void sendFileTCP();
+	void recvFileTCP();
 	static void sendMsg(int connfd,const std::string &msg);
 	static std::string recvMsg(int connfd);
 private:

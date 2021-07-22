@@ -36,27 +36,40 @@ int Connection::accept(){
 	return connfd;
 }
 
-void Connection::listen()
-{
+void Connection::sendFileUDP(std::string filename){
+	std::ifstream infile(filename, std::ios::in);
+	sendto(this->fd, filename.c_str(), filename.length(), 0, client, sizeof(*client));
+	std::cout << "start transport file.\n";
 	char buf[BUFF_SIZE];
-	while (1)
+	while (infile)
 	{
 		bzero(buf, BUFF_SIZE);
-		struct sockaddr_in client;
-		socklen_t len = sizeof(client);
-		int conn=accept(this->fd,(struct sockaddr *)&client,len);
-		if(s<0){
-			writeLog("accept connection failed.\n");
-			exit(0);
-		}
-		s = recvfrom(this->fd, buf, BUFF_SIZE, 0, (struct sockaddr *)&client, len);
-		if (s > 0)
-		{
-			buf[s] = '\0';
-			std::cout << inet_ntoa(client.sin_addr) << ntohs(client.sin_port) << buf;
-			this->transFile((struct sockaddr *)&client);
-		}
+		buf[0] = 't';
+		infile.read(buf + 1, BUFF_SIZE - 1);
+		std::cout<<"send: "<<buf;
+		sendto(this->fd, buf, strlen(buf), 0, client, sizeof(*client));
 	}
+	bzero(buf, BUFF_SIZE);
+	buf[0] = 'e';
+	sendto(this->fd, buf, strlen(buf), 0, client, sizeof(*client));
+	infile.close();
+}
+
+
+void Connection::recvFileUDP(std::string filename){
+	char buf[BUFF_SIZE];
+	std::ofstream outfile(filename, std::ios::out);
+	bzero(buf,BUFF_SIZE);
+	sendto(this->fd, filename.c_str(), BUFF_SIZE, 0, (struct sockaddr *)&this->addr, sizeof(this->addr));
+	ssize_t s;
+	do{
+		s = recvfrom(fd, buf, sizeof(buf), 0, NULL, NULL);
+		if (s > 0 && buf[0] == 't')
+			outfile.write(buf + 1,BUFF_SIZE-1);
+		else
+			break;
+	}while(1);
+	outfile.close();
 }
 
 static void Connection::sendMsg(int connfd,const std::string &msg){
