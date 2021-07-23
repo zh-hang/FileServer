@@ -1,4 +1,5 @@
 #include "connection.h"
+#include <netinet/in.h>
 
 Connection::Connection(int type)
 {
@@ -10,12 +11,14 @@ Connection::Connection(int type)
 			writeLog("create socket failed\n");
 			exit(0);
 		}
+        std::cout<<"create socket succussfully.\n";
 	}else if(this->type==TCP_TYPE){
 		this->fd=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
 		if (this->fd < 0){
 			writeLog("create socket failed\n");
 			exit(0);
 		}
+        std::cout<<"create socket succussfully.\n";
 		bzero(&this->addr, sizeof(this->addr));
 		this->addr.sin_family = AF_INET;
 		this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -46,6 +49,7 @@ void Connection::sendFileUDP(std::string filename,sockaddr *ra){
 	buf[0] = 'e';
 	sendto(this->fd, buf, strlen(buf), 0, ra, sizeof(*ra));
 	infile.close();
+    std::cout<<inet_ntoa(((struct sockaddr_in*)ra)->sin_addr)<<": finish transport file.\n";
 }
 
 
@@ -67,6 +71,7 @@ void Connection::recvFileUDP(std::string filename){
 			break;
 	}while(1);
 	outfile.close();
+    std::cout<<"finish receive file.\n";
 }
 
 void Connection::sendMsg(int connfd,const std::string &msg){
