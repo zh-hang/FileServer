@@ -19,12 +19,14 @@ int main(int argc, char* argv[])
     std::vector<std::string>fileList;
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
-        std::cout<<msg<<std::endl;
-        if(msg.substr(0,5)=="file:")
+        if(msg.substr(0,5)=="file:"){
+            std::cout<<msg.substr(5,msg.size()-5)<<std::endl;
             fileList.push_back(msg.substr(5,msg.size()-5));
+        }
         else
             break;
     }
+    ClientConnection::sendMsg(conn.fd,fileList[0]);
     int port=std::stoi(ClientConnection::recvMsg(conn.fd));
     ClientConnection fileTrans(UDP_TYPE,address,port);
     while(1){
