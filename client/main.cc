@@ -20,8 +20,8 @@ int main(int argc, char* argv[])
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
         if(msg.substr(0,5)=="file:"){
-            std::cout<<msg.substr(5,msg.size()-5)<<std::endl;
-            fileList.push_back(msg.substr(5,msg.size()-5));
+            std::cout<<msg.substr(5)<<std::endl;
+            fileList.push_back(msg.substr(5));
         }
         else
             break;

@@ -23,7 +23,7 @@ int main(){
         std::cout<<ServerConnection::recvMsg(fd);
         std::vector<std::string> filelist=fm.getFilesList();
 		for(auto file:filelist){
-            ServerConnection::sendMsg(fd,file);
+            ServerConnection::sendMsg(fd,"file:"+file);
         }
         ServerConnection::sendMsg(fd,"finish");
         std::string send_filename(ServerConnection::recvMsg(fd));
