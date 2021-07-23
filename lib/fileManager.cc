@@ -14,7 +14,8 @@ FileManager::FileManager(){
 	}
     auto dirp=readdir(dir);
 	while(dirp != nullptr){
-		this->files_list.push_back(dirp->d_name);
+        if(dirp->d_type==DT_REG)
+    		this->files_list.push_back(dirp->d_name);
         dirp=readdir(dir);
 	}
 	closedir(dir);

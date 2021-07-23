@@ -19,12 +19,9 @@ int main(int argc, char* argv[])
     std::vector<std::string>fileList;
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
-        auto pos=msg.find("file:");
-        if(std::string::npos==pos){
-            if(msg.substr(pos+5)=="..")
-                continue;
-            std::cout<<msg.substr(pos+5)<<std::endl;
-            fileList.push_back(msg.substr(pos+5));
+        if(msg.compare(0,5,"file:")==0){
+            std::cout<<msg.substr(5)<<std::endl;
+            fileList.push_back(msg.substr(5));
         }
         else
             break;
