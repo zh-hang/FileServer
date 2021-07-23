@@ -23,16 +23,18 @@ typedef int conn_type;
 #define UDP_TYPE 1
 
 class Connection{
+
 public:
 	int fd;
 	conn_type type;
+    struct sockaddr_in addr;
 	
 	Connection(int type=TCP_TYPE);
 	~Connection(){
 		close(this->fd);
 	}
-	void sendFileUDP();
-	void recvFileUDP();
+	void sendFileUDP(std::string filename,sockaddr *ra);
+	void recvFileUDP(std::string filename);
 	void sendFileTCP();
 	void recvFileTCP();
 	static void sendMsg(int connfd,const std::string &msg);

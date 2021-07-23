@@ -1,6 +1,6 @@
 #include "connection.h"
 
-Connection::Connection(int type=TCP_TYPE)
+Connection::Connection(int type)
 {
 	this->type=type;
 	if (this->type == UDP_TYPE)
@@ -11,7 +11,7 @@ Connection::Connection(int type=TCP_TYPE)
 			exit(0);
 		}
 	}else if(this->type==TCP_TYPE){
-		this->id=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
+		this->fd=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
 		if (this->fd < 0){
 			writeLog("create socket failed\n");
 			exit(0);
@@ -21,7 +21,7 @@ Connection::Connection(int type=TCP_TYPE)
 		this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
 		this->addr.sin_port = htons(TCP_PORT);
 	}else{
-		writeLog("unknown connection type.\n";
+		writeLog("unknown connection type.\n");
 		exit(0);
 	}
 }
@@ -69,25 +69,25 @@ void Connection::recvFileUDP(std::string filename){
 	outfile.close();
 }
 
-static void Connection::sendMsg(int connfd,const std::string &msg){
+void Connection::sendMsg(int connfd,const std::string &msg){
 	int res=send(connfd,msg.c_str(),msg.length(),0);
 	if(res<0){
 		struct sockaddr_in sa;
-		int len = sizeof(sa);
-		getpeername(m_sockfd, (struct sockaddr *)&sa, &len);
+		socklen_t len = sizeof(sa);
+		getpeername(connfd, (struct sockaddr *)&sa, &len);
 		std::string log("send msg failed.\n");
 		log+=inet_ntoa(sa.sin_addr);
 		writeLog(log);
 	}
 }
 
-static std::string Connection::recvMsg(int connfd){
-	char buf[BUFF_SIZE]
+std::string Connection::recvMsg(int connfd){
+	char buf[BUFF_SIZE];
 	int res=recv(connfd,buf,BUFF_SIZE,0);
 	if(res<0){
 		struct sockaddr_in ra;
-		int len = sizeof(ra);
-		getpeername(m_sockfd, (struct sockaddr *)&ra, &len);
+		socklen_t len = sizeof(ra);
+		getpeername(connfd, (struct sockaddr *)&ra, &len);
 		std::string log("receive msg failed.\n");
 		log+=inet_ntoa(ra.sin_addr);
 		writeLog(log);

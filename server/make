@@ -1,5 +1,5 @@
 if !(test -d debug);then
 	mkdir debug
 fi
-g++ src/log.cc src/fileManager.cc src/connection.cc main.cc -o debug/server
+g++ ../lib/log.cc ../lib/fileManager.cc ../lib/connection.cc src/serverConnection.cc main.cc -o debug/server
 	

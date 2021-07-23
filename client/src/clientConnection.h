@@ -10,15 +10,15 @@
 #include <arpa/inet.h>
 #include <fstream>
 
-#include "connection.h"
+#include "../../lib/connection.h"
 
 #ifndef CLIENT_CONNECTION_H
 #define CLIENT_CONNECTION_H
 
-class ClientConnection
+class ClientConnection:public Connection
 {
 public:
-	ClientConnection(int type, std::string server_addr);
+	ClientConnection(int type, std::string server_addr,int port=TCP_PORT);
 	~ClientConnection()
 	{
 		close(this->fd);
