@@ -1,4 +1,5 @@
-#include "fileManage.h"
+#include "fileManager.h"
+#include <dirent.h>
 
 FileManager::FileManager(){
 	std::string file_path(getcwd(NULL,0));
@@ -11,8 +12,10 @@ FileManager::FileManager(){
 		writeLog("open dir failed.\n");
 		exit(0);
 	}
-	while((dirp = readdir(dp)) != nullptr){
+    auto dirp=readdir(dir);
+	while(dirp != nullptr){
 		this->files_list.push_back(dirp->d_name);
+        dirp=readdir(dir);
 	}
 	closedir(dir);
 }
