@@ -1,4 +1,4 @@
 if ! (test -d debug);then
 	mkdir debug
 fi
-g++ src/connection.cc main.cc -o debug/client
+g++ ../lib/log.cc ../lib/fileManager.cc ../lib/connection.cc src/clientConnection.cc main.cc -o debug/client

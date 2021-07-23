@@ -7,17 +7,16 @@
 
 #include "src/serverConnection.h"
 
-#include "log.h"
-#include "fileManager.h"
+#include "../lib/log.h"
+#include "../lib/fileManager.h"
 
-#define UDP_PORT 12345
-#define TCP_PORT 23456
 
 int main(){
-	FileManager fm();
-	ServerConnection main_connection();
+	FileManager fm;
+	ServerConnection main_connection(TCP_TYPE);
 	while(true){
-		int fd=main_connection.accept();
+		int fd=main_connection.acceptTCP();
+        std::cout<<Connection::recvMsg(fd);
 		Connection::sendMsg(fd,"have received.\n");
 		close(fd);
 	}

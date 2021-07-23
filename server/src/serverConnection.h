@@ -9,19 +9,19 @@
 #include <iostream>
 #include <fstream>
 
-#include "log.h"
-#include "connection.h"
+#include "../../lib/log.h"
+#include "../../lib/connection.h"
 
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-class ServerConnection::public Connection{
+class ServerConnection:public Connection{
 public:
 	ServerConnection(int type=TCP_TYPE);
 	~ServerConnection(){
 		close(this->fd);
 	}
-	void accept();
+	int acceptTCP();
 };
 
 #endif

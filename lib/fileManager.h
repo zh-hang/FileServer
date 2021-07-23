@@ -13,7 +13,7 @@ private:
 	std::vector<std::string> files_list;
 public:
 	FileManager();
-	~FileManaer(){}
+	~FileManager(){}
 	
 	std::vector<std::string> getFilesList(){
 		return this->files_list;
