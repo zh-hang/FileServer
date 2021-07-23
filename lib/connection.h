@@ -10,10 +10,9 @@
 #include <fstream>
 
 #include "log.h"
-#include "connection.h"
 
-#ifndef SERVER_CONNECTION_H
-#define SERVER_CONNECTION_H
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
 #define BUFF_SIZE 4086
 #define QUEQUE_SIZE 10
@@ -22,13 +21,22 @@ typedef int conn_type;
 #define TCP_TYPE 0
 #define UDP_TYPE 1
 
-class ServerConnection::public Connection{
+class Connection{
 public:
-	ServerConnection(int type=TCP_TYPE);
-	~ServerConnection(){
+	int fd;
+	conn_type type;
+	
+	Connection(int type=TCP_TYPE);
+	~Connection(){
 		close(this->fd);
 	}
-	void accept();
+	void sendFileUDP();
+	void recvFileUDP();
+	void sendFileTCP();
+	void recvFileTCP();
+	static void sendMsg(int connfd,const std::string &msg);
+	static std::string recvMsg(int connfd);
+
 };
 
 #endif
