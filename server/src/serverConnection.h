@@ -15,13 +15,6 @@
 #ifndef SERVER_CONNECTION_H
 #define SERVER_CONNECTION_H
 
-#define BUFF_SIZE 4086
-#define QUEQUE_SIZE 10
-
-typedef int conn_type;
-#define TCP_TYPE 0
-#define UDP_TYPE 1
-
 class ServerConnection::public Connection{
 public:
 	ServerConnection(int type=TCP_TYPE);

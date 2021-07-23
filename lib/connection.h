@@ -16,6 +16,7 @@
 
 #define BUFF_SIZE 4086
 #define QUEQUE_SIZE 10
+#define TCP_PORT 12345
 
 typedef int conn_type;
 #define TCP_TYPE 0

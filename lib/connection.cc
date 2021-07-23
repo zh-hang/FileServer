@@ -1,27 +1,27 @@
 #include "connection.h"
 
-Connection::Connection(int type=TCP_TYPE,int port)
+Connection::Connection(int type=TCP_TYPE)
 {
 	this->type=type;
-	bzero(&this->addr, sizeof(this->addr));
-	this->addr.sin_family = AF_INET;
-	this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	this->addr.sin_port = htons(port);
 	if (this->type == UDP_TYPE)
 	{
 		this->fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+		if (this->fd < 0){
+			writeLog("create socket failed\n");
+			exit(0);
+		}
 	}else if(this->type==TCP_TYPE){
-		this->id=socket(AF_INET, SOCK_DGRAM,IPPROTO_UDP);
+		this->id=socket(AF_INET, SOCK_STREAM,IPPROTO_TCP);
+		if (this->fd < 0){
+			writeLog("create socket failed\n");
+			exit(0);
+		}
+		bzero(&this->addr, sizeof(this->addr));
+		this->addr.sin_family = AF_INET;
+		this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		this->addr.sin_port = htons(TCP_PORT);
 	}else{
 		writeLog("unknown connection type.\n";
-		exit(0);
-	}
-	if (this->fd < 0){
-		writeLog("create socket failed\n");
-		exit(0);
-	}
-	if (bind(this->fd, (struct sockaddr *)&this->addr, sizeof(this->addr)) < 0){
-		writeLog("bind failed.\n");
 		exit(0);
 	}
 }

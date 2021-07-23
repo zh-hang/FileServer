@@ -4,9 +4,11 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <string.h>
-#include "src/log.h"
-#include "src/connection.h"
-#include "src/fileManager.h"
+
+#include "src/serverConnection.h"
+
+#include "log.h"
+#include "fileManager.h"
 
 #define UDP_PORT 12345
 #define TCP_PORT 23456
