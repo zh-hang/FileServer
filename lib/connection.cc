@@ -1,4 +1,5 @@
 #include "connection.h"
+#include <cstddef>
 #include <netinet/in.h>
 
 Connection::Connection(int type)
@@ -105,17 +106,18 @@ void Connection::sendMsg(int connfd,const std::string &msg,const sockaddr*ra){
     int res=sendto(connfd, msg.c_str(), BUFF_SIZE, 0, ra, sizeof(*ra));
 	if(res<0){
 		std::string log("send msg failed.\n");
-		log+=inet_ntoa(((sockaddr_in*)&ra)->sin_addr);
+		log+=inet_ntoa(((sockaddr_in*)ra)->sin_addr);
 		writeLog(log);
 	}
 }
 
-std::string Connection::recvMsg(int connfd,sockaddr*ra){
+std::string Connection::recvMsg(int connfd,sockaddr*sa){
     char buf[BUFF_SIZE];
-	int res=recv(connfd,buf,BUFF_SIZE,0);
+    socklen_t len=sizeof(*sa);
+	int res=recvfrom(connfd,buf,BUFF_SIZE,0,sa,&len);
 	if(res<0){
 		std::string log("receive msg failed.\n");
-		log+=inet_ntoa(((sockaddr_in*)&ra)->sin_addr);
+		log+=inet_ntoa(((sockaddr_in*)sa)->sin_addr);
 		writeLog(log);
 	}
 	return std::string(buf);
