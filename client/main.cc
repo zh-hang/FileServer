@@ -19,8 +19,8 @@ int main(int argc, char* argv[])
     std::vector<std::string>fileList;
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
+        std::cout<<"receive: "<<msg<<std::endl;
         if(msg.compare(0,5,"file:")==0){
-            std::cout<<msg.substr(5)<<std::endl;
             fileList.push_back(msg.substr(5));
         }
         else
