@@ -18,14 +18,14 @@
 class ClientConnection:public Connection
 {
 public:
+	struct sockaddr_in server_addr;
+    
 	ClientConnection(int type, std::string server_addr,int port=TCP_PORT);
 	~ClientConnection()
 	{
 		close(this->fd);
 	}
 
-private:
-	struct sockaddr_in server_addr;
 };
 
 #endif
