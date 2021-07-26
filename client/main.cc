@@ -7,6 +7,8 @@
 #include "src/clientConnection.h"
 #include <vector>
 
+#define PORT 41414
+
 std::string address="139.9.202.175";
 
 int main(int argc, char* argv[])
@@ -19,16 +21,15 @@ int main(int argc, char* argv[])
     std::vector<std::string>fileList;
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
-        std::cout<<"receive: "<<msg<<std::endl;
         if(msg.compare(0,5,"file:")==0){
+            std::cout<<"receive: "<<msg.substr(5)<<std::endl;
             fileList.push_back(msg.substr(5));
         }
         else
             break;
     }
     ClientConnection::sendMsg(conn.fd,fileList[0]);
-    int port=std::stoi(ClientConnection::recvMsg(conn.fd));
-    ClientConnection fileTrans(UDP_TYPE,address,port);
+    ClientConnection fileTrans(UDP_TYPE,address,PORT);
     while(1){
         fileTrans.recvFileUDP(fileList[0]);
     }
