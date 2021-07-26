@@ -29,10 +29,9 @@ int main(){
         std::string send_filename(ServerConnection::recvMsg(fd));
         ServerConnection::sendMsg(fd,std::to_string(UDP_Port));
         sockaddr*ra=new sockaddr();
-        socklen_t len=sizeof(*ra);
-        bzero(ra,len);
-        getpeername(fd, ra, &len);
+        ServerConnection::recvMsg(send_file_connection.fd,ra);
         send_file_connection.sendFileUDP(send_filename, ra);
+        delete ra;
 		close(fd);
 	}
 	return 0;
