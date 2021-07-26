@@ -1,4 +1,5 @@
 #include "serverConnection.h"
+#include <cstdlib>
 
 ServerConnection::ServerConnection(int type,int port):Connection{type}
 {
@@ -13,8 +14,10 @@ ServerConnection::ServerConnection(int type,int port):Connection{type}
 		exit(0);
 	}
     std::cout<<"bind successfully.\n";
-	if(listen(this->fd,QUEQUE_SIZE)<0)
+	if(this->type==UDP_TYPE || listen(this->fd,QUEQUE_SIZE)<0){
 		writeLog("listen failed.\n");
+        exit(0);
+    }
     std::cout<<"listen successfully.\n";
 }
 

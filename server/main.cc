@@ -20,6 +20,7 @@ int main(){
     ServerConnection send_file_connection(UDP_TYPE,UDP_Port);
     sockaddr*sa;
     std::string filename=ServerConnection::recvMsg(send_file_connection.fd,sa);
+    std::cout<<filename;
     send_file_connection.sendFileUDP(filename, sa);
 	// while(true){
 	// 	int fd=main_connection.acceptTCP();
