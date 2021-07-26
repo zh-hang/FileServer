@@ -75,7 +75,7 @@ void Connection::recvFileUDP(std::string filename){
 }
 
 void Connection::sendMsg(int connfd,const std::string &msg){
-	int res=send(connfd,msg.c_str(),msg.length(),0);
+	int res=send(connfd,msg.c_str(),BUFF_SIZE,0);
 	if(res<0){
 		struct sockaddr_in sa;
 		socklen_t len = sizeof(sa);
