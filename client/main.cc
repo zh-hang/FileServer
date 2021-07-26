@@ -15,23 +15,24 @@ int main(int argc, char* argv[])
 {
     if(argc==2)
         address=argv[1];
-    ClientConnection conn(TCP_TYPE,address);
-    ClientConnection::sendMsg(conn.fd,"hello");
-    std::string msg;
-    std::vector<std::string>fileList;
-    while(1) {
-        msg=ClientConnection::recvMsg(conn.fd);
-        if(msg.compare(0,5,"file:")==0){
-            std::cout<<"receive: "<<msg.substr(5)<<std::endl;
-            fileList.push_back(msg.substr(5));
-        }
-        else
-            break;
-    }
-    ClientConnection::sendMsg(conn.fd,fileList[0]);
+    // ClientConnection conn(TCP_TYPE,address);
+    // ClientConnection::sendMsg(conn.fd,"hello");
+    // std::string msg;
+    // std::vector<std::string>fileList;
+    // while(1) {
+    //     msg=ClientConnection::recvMsg(conn.fd);
+    //     if(msg.compare(0,5,"file:")==0){
+    //         std::cout<<"receive: "<<msg.substr(5)<<std::endl;
+    //         fileList.push_back(msg.substr(5));
+    //     }
+    //     else
+    //         break;
+    // }
+    // ClientConnection::sendMsg(conn.fd,fileList[0]);
     ClientConnection fileTrans(UDP_TYPE,address,PORT);
+    ClientConnection::sendMsg(fileTrans.fd,"log.txt");
     while(1){
-        fileTrans.recvFileUDP(fileList[0]);
+        fileTrans.recvFileUDP("log.txt");
     }
     return 0;
 }
