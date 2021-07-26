@@ -17,6 +17,7 @@ int main(int argc, char* argv[])
     ClientConnection conn(TCP_TYPE,address);
     std::string msg;
     std::vector<std::string>fileList;
+    ClientConnection::sendMsg(conn.fd,"hello");
     while(1) {
         msg=ClientConnection::recvMsg(conn.fd);
         if(msg.compare(0,5,"file:")==0){
