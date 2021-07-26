@@ -39,6 +39,8 @@ public:
 	void recvFileTCP();
 	static void sendMsg(int connfd,const std::string &msg);
 	static std::string recvMsg(int connfd);
+	static void sendMsg(int connfd,const std::string &msg,const sockaddr*sa);
+	static std::string recvMsg(int connfd,sockaddr*ra);
 
 };
 
