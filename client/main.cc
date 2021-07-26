@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
     int port =std::stoi(ClientConnection::recvMsg(conn.fd));
     ClientConnection fileTrans(UDP_TYPE,address,port);    
     std::cout<<"start recv file\n";
+    ClientConnection::sendMsg(fileTrans.fd,"ready",(sockaddr*)&fileTrans.addr);
     fileTrans.recvFileUDP(fileList[0]);
     
     return 0;
