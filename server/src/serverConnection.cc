@@ -14,11 +14,13 @@ ServerConnection::ServerConnection(int type,int port):Connection{type}
 		exit(0);
 	}
     std::cout<<"bind successfully.\n";
-	if(this->type==UDP_TYPE || listen(this->fd,QUEQUE_SIZE)<0){
-		writeLog("listen failed.\n");
-        exit(0);
+    if(this->type==TCP_TYPE){
+        if(listen(this->fd,QUEQUE_SIZE)<0){
+            writeLog("listen failed.\n");
+            exit(0);
+        }
+        std::cout<<"listen successfully.\n";
     }
-    std::cout<<"listen successfully.\n";
 }
 
 int ServerConnection::acceptTCP(){
