@@ -1,5 +1,4 @@
 #include "fileManager.h"
-#include <dirent.h>
 
 FileManager::FileManager(){
 	std::string file_path(getcwd(NULL,0));
@@ -19,4 +18,9 @@ FileManager::FileManager(){
         dirp=readdir(dir);
 	}
 	closedir(dir);
+    std::cout<<std::endl<<"find file: \n";
+    for(auto file:this->files_list){
+        std::cout<<file<<" ";
+    }
+    std::cout<<std::endl;
 }
