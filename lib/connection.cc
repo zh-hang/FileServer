@@ -64,6 +64,7 @@ void Connection::recvFileUDP(std::string filename){
 	}while(buf[0]!='s');
 	
 	do{
+        
 		s = recvfrom(fd, buf, sizeof(buf), 0, NULL, NULL);
 		if (s > 0 && buf[0] == 't')
 			outfile.write(buf + 1,BUFF_SIZE-1);
