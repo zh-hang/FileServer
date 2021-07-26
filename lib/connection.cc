@@ -33,7 +33,7 @@ Connection::Connection(int type)
 
 void Connection::sendFileUDP(std::string filename,sockaddr *ra){
 	std::ifstream infile(filename, std::ios::in);
-	std::cout << "start transport file.\n";
+	std::cout << "start transport file： "<<filename<<std::endl;
 	char buf[BUFF_SIZE];
 	bzero(buf, BUFF_SIZE);
 	buf[0] = 's';
@@ -43,7 +43,6 @@ void Connection::sendFileUDP(std::string filename,sockaddr *ra){
 		bzero(buf, BUFF_SIZE);
 		buf[0] = 't';
 		infile.read(buf + 1, BUFF_SIZE - 1);
-		std::cout<<"send: "<<buf<<std::endl;
 		sendto(this->fd, buf, BUFF_SIZE, 0, ra, sizeof(*ra));
 	}
 	bzero(buf, BUFF_SIZE);
