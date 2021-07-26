@@ -1,6 +1,8 @@
 #include <vector>
 #include <string>
+#include <iostream>
 #include <unistd.h>
+#include <dirent.h>
 #include <dirent.h>
 
 #include "log.h"
