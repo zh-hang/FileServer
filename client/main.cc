@@ -31,7 +31,8 @@ int main(int argc, char* argv[])
     // ClientConnection::sendMsg(conn.fd,fileList[0]);
     std::cout<<address<<std::endl;
     ClientConnection fileTrans(UDP_TYPE,address,23456);
-    ClientConnection::sendMsg(fileTrans.fd,"log.txt",(sockaddr*)&fileTrans.addr);
+    
+    ClientConnection::sendMsg(fileTrans.fd,"log.txt",(sockaddr*)&(fileTrans.addr));
     std::cout<<"start recv file\n";
     while(1){
         fileTrans.recvFileUDP("log.txt");
