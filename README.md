@@ -60,3 +60,6 @@
 - 利用select实现并发文件下载
 - 使用threadpool实现并发
 
+## 参考文档
+
+- [C++11线程池实现](https://www.cnblogs.com/lzpong/p/6397997.html)
