@@ -41,7 +41,7 @@ public:
     }
 
     template<class F,class...Args>
-    auto commit(F&&f,Args&&...args) ->std::future<decltype(f(args...))>;
+    void commit(F&&f,Args&&...args);
 
     int freeThreadCount(){
         return this->_free_thread_num;
