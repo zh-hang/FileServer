@@ -1,7 +1,7 @@
 #include "threadpool.h"
 
 template<class F,class...Args>
-auto ThreadPool::commit(F&&f,Args&&...args) ->std::future<decltype(f(args...))>{
+void ThreadPool::commit(F&&f,Args&&...args){
     if(!this->_run){
         std::cout<<"thread pool is stopped.\n";
         exit(0);
@@ -10,7 +10,6 @@ auto ThreadPool::commit(F&&f,Args&&...args) ->std::future<decltype(f(args...))>{
     auto task=std::make_shared<std::packaged_task<RetType()>>(
         std::bind(std::forward<F>(f),std::forward<Args>(args)...)
     );
-    std::future<RetType> future = task->get_future();
     {
         std::lock_guard<std::mutex> lock{ this->_lock };
         this->_tasks.emplace([task](){
@@ -18,7 +17,6 @@ auto ThreadPool::commit(F&&f,Args&&...args) ->std::future<decltype(f(args...))>{
         });
     }
     this->_task_cv.notify_one();
-    return future;
 }
 
 void ThreadPool::addThread(int num){
