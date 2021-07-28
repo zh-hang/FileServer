@@ -3,6 +3,7 @@
 
 ServerConnection::ServerConnection(int type,int port):Connection{type}
 {
+    this->port=port;
     if(this->type==UDP_TYPE){
 		bzero(&this->addr, sizeof(this->addr));
 		this->addr.sin_family = AF_INET;

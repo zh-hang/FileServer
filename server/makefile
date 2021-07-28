@@ -1,0 +1,5 @@
+if !(test -d debug);then
+	mkdir debug
+fi
+g++ ../lib/threadpool.cc ../lib/log.cc ../lib/fileManager.cc ../lib/connection.cc src/serverConnection.cc main.cc -o debug/server
+	

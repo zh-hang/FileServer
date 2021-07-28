@@ -17,6 +17,7 @@
 
 class ServerConnection:public Connection{
 public:
+    int port;
 	ServerConnection(int type,int port=TCP_PORT);
 	~ServerConnection(){
 		close(this->fd);
