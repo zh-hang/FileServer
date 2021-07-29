@@ -1,23 +1,6 @@
 #include "threadpool.h"
 
-template<class F,class...Args>
-void ThreadPool::commit(F&&f,Args&&...args){
-    if(!this->_run){
-        std::cout<<"thread pool is stopped.\n";
-        exit(0);
-    }
-    using RetType=decltype(f(args...));
-    auto task=std::make_shared<std::packaged_task<RetType()>>(
-        std::bind(std::forward<F>(f),std::forward<Args>(args)...)
-    );
-    {
-        std::lock_guard<std::mutex> lock{ this->_lock };
-        this->_tasks.emplace([task](){
-           (*task)();
-        });
-    }
-    this->_task_cv.notify_one();
-}
+
 
 void ThreadPool::addThread(int num){
     for (; this->_thread_pool.size() < MAX_NUM && num > 0; --num){

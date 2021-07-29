@@ -24,6 +24,5 @@ int main(){
     test t;
     t.print(foo,a,b,c);
     ThreadPool pool;
-    pool.commit(foo,a,b,c);
     return 0;
 }
