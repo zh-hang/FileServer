@@ -9,8 +9,8 @@
 #include <memory>
 #include <future>
 
-#ifndef THREAD_POOL_CLASS
-#define THREAD_POOL_CLASS
+#ifndef MY_THREAD_POOL_H
+#define MY_THREAD_POOL_H
 
 #define MAX_NUM 32
 
@@ -42,7 +42,7 @@ public:
 
     template<class F,class...Args>
     void commit(F&&f,Args&&...args);
-
+    
     int freeThreadCount(){
         return this->_free_thread_num;
     }
@@ -56,4 +56,24 @@ private:
     void addThread(int num);
 
 };
+
+template<class F,class...Args>
+void ThreadPool::commit(F&&f,Args&&...args){
+    if(!this->_run){
+        std::cout<<"thread pool is stopped.\n";
+        exit(0);
+    }
+    using RetType=decltype(f(args...));
+    auto task=std::make_shared<std::packaged_task<RetType()>>(
+        std::bind(std::forward<F>(f),std::forward<Args>(args)...)
+    );
+    {
+        std::lock_guard<std::mutex> lock{ this->_lock };
+        this->_tasks.emplace([task](){
+           (*task)();
+        });
+    }
+    this->_task_cv.notify_one();
+}
+
 #endif
