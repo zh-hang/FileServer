@@ -10,7 +10,7 @@ class test{
 
 template<class F,class ...Args>
 void test::print(F&&f,Args&&...args){
-    *f(args...);
+    std::cout<<f(args...);
 }
 
 int foo(int a,int b,int c){
@@ -20,6 +20,6 @@ int foo(int a,int b,int c){
 int main(){
     int a(1),b(2),c(3);
     test t;
-    t(&foo,a,b,c);
+    t.print(foo,a,b,c);
     return 0;
 }
