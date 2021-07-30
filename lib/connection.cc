@@ -83,7 +83,7 @@ void Connection::sendMsg(int connfd,const std::string &msg){
 		getpeername(connfd, (struct sockaddr *)&ra, &len);
 		std::string log("send msg failed.\n");
 		log+=inet_ntoa(ra.sin_addr);
-		writeLog(log);
+		writeLog(log+"\n");
 	}
 }
 
@@ -96,7 +96,7 @@ std::string Connection::recvMsg(int connfd){
 		getpeername(connfd, (struct sockaddr *)&sa, &len);
 		std::string log("receive msg failed.\n");
 		log+=inet_ntoa(sa.sin_addr);
-		writeLog(log);
+		writeLog(log+"\n");
 	}
 	return std::string(buf);
 }
@@ -107,7 +107,7 @@ void Connection::sendMsg(int connfd,const std::string &msg,const sockaddr*ra){
 	if(res<0){
 		std::string log("send msg failed.\n");
 		log+=inet_ntoa(((sockaddr_in*)ra)->sin_addr);
-		writeLog(log);
+		writeLog(log+"\n");
 	}
 }
 
@@ -118,7 +118,7 @@ std::string Connection::recvMsg(int connfd,sockaddr*sa){
 	if(res<0){
 		std::string log("receive msg failed.\n");
 		log+=inet_ntoa(((sockaddr_in*)sa)->sin_addr);
-		writeLog(log);
+		writeLog(log+"\n");
 	}
 	return std::string(buf);
 }
