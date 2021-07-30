@@ -2,4 +2,4 @@ if ! (test -d debug);then
 	mkdir debug
 fi
 files="../lib/log.cc ../lib/fileManager.cc ../lib/connection.cc src/clientConnection.cc main.cc"
-g++ $files  -o debug/client -lpthread
+g++ $files  -o debug/client -lpthread -g
