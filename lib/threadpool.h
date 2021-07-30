@@ -41,7 +41,7 @@ public:
     }
 
     template<class F,class...Args>
-    void commit(F&&f,Args&&...args);
+    void commit(F &&f,Args &&...args);
     
     int freeThreadCount(){
         return this->_free_thread_num;
@@ -58,7 +58,7 @@ private:
 };
 
 template<class F,class...Args>
-void ThreadPool::commit(F&&f,Args&&...args){
+void ThreadPool::commit(F &&f,Args&&...args){
     if(!this->_run){
         std::cout<<"thread pool is stopped.\n";
         exit(0);

@@ -3,6 +3,8 @@
 #include <map>
 #include <string.h>
 
+#include <iostream>
+
 #ifndef USER_MANAGER_H
 #define USER_MANAGER_H
 
@@ -24,7 +26,9 @@ class UserManager{
     ~UserManager(){
     }
     bool login(std::string name,std::string pws){
-        return this->_user_data.find(name)->second==pws;
+        if(this->_user_data.find(name)!=this->_user_data.end())
+            return this->_user_data.find(name)->second==pws;
+        return false;
     }
 };
 
