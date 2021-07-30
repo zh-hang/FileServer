@@ -21,7 +21,7 @@ void showCommand(){
 
 void printFileList(std::vector<std::string>&fileList){
     for(size_t i =0;i<fileList.size();i++){
-        std::cout<<i<<fileList[i]<<std::endl;
+        std::cout<<i<<":"<<fileList[i]<<std::endl;
     }
 }
 
@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
     }
     ClientConnection conn(TCP_TYPE,address);
     std::string msg;
+    ClientConnection::sendMsg(conn.fd,msg);
     std::vector<std::string>fileList;
     std::string user_name,user_password;
     std::cout<<"please input your user name and password seperated by space.\n";

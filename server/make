@@ -2,5 +2,5 @@ if !(test -d debug);then
 	mkdir debug
 fi
 files="../lib/threadpool.cc ../lib/log.cc ../lib/fileManager.cc ../lib/connection.cc src/serverConnection.cc src/userManager.cc main.cc"
-g++ $files -o debug/server -lpthread
+g++ $files -o debug/server -lpthread -g
 	
