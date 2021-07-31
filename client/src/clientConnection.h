@@ -22,11 +22,6 @@ public:
 	~ClientConnection()
 	{
 	}
-    
-    void close_self(){
-        close(this->fd);
-    }
-
 };
 
 #endif

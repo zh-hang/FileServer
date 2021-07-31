@@ -42,11 +42,16 @@ public:
 	void recvFileUDP(std::string filename);
 	void sendFileTCP();
 	void recvFileTCP();
+	
 	static void sendMsg(int connfd,const std::string &msg);
 	static std::string recvMsg(int connfd);
-	static void sendMsg(int connfd,const std::string &msg,const sockaddr*sa);
-	static std::string recvMsg(int connfd,sockaddr*ra);
+	static void sendMsg(int connfd,const std::string &msg,const sockaddr*ra);
+	static std::string recvMsg(int connfd,sockaddr*sa);
 
+	void close_self(){
+        close(this->fd);
+    }
+	
 };
 
 #endif
