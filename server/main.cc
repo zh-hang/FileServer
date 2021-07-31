@@ -60,18 +60,12 @@ void recvFile(int fd,ServerConnection &file_connection){
 
 //这里不使用引用的原因时是线程池绑定函数使用的std::bind，默认拷贝，线程池代码还没改改了再换引用
 void dealConnection(int fd,FileManager fm,ServerConnection &file_connection){
-    int id = syscall(SYS_gettid);
-    std::cout<<id<<"use"<<fd<<std::endl;
-    std::string thread_msg=std::to_string(id)+"use"+std::to_string(fd);
-    std::cout<<ServerConnection::recvMsg(fd);
     auto user_data= ServerConnection::recvMsg(fd);
-    debug_errno();
     size_t f_pos=user_data.find("%");
     size_t s_pos=user_data.find("%",f_pos+1);
     std::cout<<user_data.substr(f_pos+1,s_pos-f_pos-1)<<user_data.substr(s_pos+1)<<std::endl;
     if(user_manager.login(user_data.substr(f_pos+1,s_pos-f_pos-1), user_data.substr(s_pos+1))){
         ServerConnection::sendMsg(fd,"correct");
-        debug_errno();
         std::vector<std::string> filelist=fm.getFilesList();
         for(auto file:filelist){
             ServerConnection::sendMsg(fd,"file:"+file);
@@ -105,9 +99,6 @@ void dealConnection(int fd,FileManager fm,ServerConnection &file_connection){
     }else{
         ServerConnection::sendMsg(fd,"incorrect");
     }
-    
-    std::cout<<id<<"close"<<fd<<std::endl;
-    // thread_msg=std::to_string(id)+"close"+std::to_string(fd);
     close(fd);
 }
 
@@ -129,11 +120,6 @@ int main(){
     std::thread t1;
 	while(true){
 		fds[i]=main_connection.acceptTCP();
-        std::cout<<"fd:"<<fds[i]<<std::endl;
-        // std::cout<<ServerConnection::recvMsg(fds[i]);
-        // t1=std::thread(dealConnection,fds[i],fm,*file_connections[i]);
-        // t1.join();
-        // dealConnection(fd,fm,file_connections[i]);
         pool.commit(dealConnection, fds[i],fm,*file_connections[i]);
         i=(i+1)%MAX_NUM;
 	}
