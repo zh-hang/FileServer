@@ -66,6 +66,20 @@
 
 ### 模型
 
+系统模型和迭代三相同，这里主要讨论几个模块的数据流图。
+
+#### 用户登录
+
+![](images/login.png)
+
+#### 文件下载
+
+![](images/download.png)
+
+#### 文件上传
+
+![](images/upload.png)
+
 ### 需求
 
 - 实现用户验证
@@ -74,3 +88,5 @@
 ## 参考文档
 
 - [C++11线程池实现](https://www.cnblogs.com/lzpong/p/6397997.html)
+- [根据linux内核源码查找recv返回EBADF(errno 9)的原因](https://www.cnblogs.com/james1207/p/3400192.html)
+
