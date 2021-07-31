@@ -24,9 +24,6 @@ public:
 	ServerConnection(int type,int port=TCP_PORT);
 	~ServerConnection(){
 	}
-    void close_self(){
-        close(this->fd);
-    }
 	int acceptTCP();
 };
 
