@@ -16,6 +16,8 @@
 
 #include "../lib/typedef.h"
 
+#define DEBUG_TIME
+
 void showCommand(){
     std::cout<<CLIENT_EOF<<":quit"<<std::endl;
     std::cout<<DOWLOAD_FILE<<":download"<<std::endl;
@@ -54,6 +56,7 @@ void sendFile(int fd,std::string &address,std::vector<std::string>&fileList){
         if(filename[c]=='.'||filename[c]=='/')
             continue;
         clear_filename=filename.substr(c);
+        break;
     }
     for(auto file:fileList){
         if (clear_filename==file) {
@@ -90,26 +93,25 @@ int main(int argc, char* argv[])
     std::vector<std::string>fileList;
     std::string user_name,user_password;
     std::cout<<"please input your user name and password seperated by space.\n";
-    // std::cin>>user_name>>user_password;
+
+#ifndef DEBUG_TIME
+    std::cin>>user_name>>user_password;
+#else
     user_name="admin";
     user_password="123456";
+#endif
+
     msg="%"+user_name+"%"+user_password;
     ClientConnection::sendMsg(conn.fd,msg);
     std::cout<<msg<<std::endl;
     msg=ClientConnection::recvMsg(conn.fd);
+
+#ifdef DEBUG_TIME
     std::cout<<msg<<std::endl;
+#endif
+
     if(msg!="correct"){
         std::cout<<"your user name and password is incorrect."<<std::endl;
-        switch (errno) {
-            case EBADF:std::cout<<"sock不是有效的描述词\n";break;
-            case ECONNREFUSED:std::cout<<"远程主机阻绝网络连接\n";break;
-            case EFAULT:std::cout<<"内存空间访问出错\n";break;
-            case EINTR:std::cout<<"操作被信号中断\n";break;
-            case EINVAL:std::cout<<"参数无效\n";break;
-            case ENOMEM:std::cout<<"内存不足\n";break;
-            case ENOTCONN:std::cout<<"与面向连接关联的套接字尚未被连接上\n";break;
-            case ENOTSOCK:std::cout<<"sock索引的不是套接字\n";break;
-        }
         return 0;
     }
     while(1) {
