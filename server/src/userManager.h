@@ -25,9 +25,9 @@ class UserManager{
     }
     ~UserManager(){
     }
-    bool login(std::string name,std::string pws){
+    bool login(std::string name,std::string psw){
         if(this->_user_data.find(name)!=this->_user_data.end())
-            return this->_user_data.find(name)->second==pws;
+            return this->_user_data.find(name)->second==psw;
         return false;
     }
 };
