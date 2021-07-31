@@ -11,6 +11,7 @@
 #include <vector>
 #include <fstream>
 #include <map>
+#include <sys/syscall.h> 
 
 #include "src/serverConnection.h"
 #include "src/userManager.h"
@@ -22,18 +23,33 @@
 
 
 static std::string _user_data_file="user.txt";
+static UserManager user_manager(_user_data_file);
 
+void debug_errno(){
+    int id = syscall(SYS_gettid);
+    std::cout<<id;
+    switch (errno) {
+        case EBADF:std::cout<<"sock不是有效的描述词\n";break;
+        case ECONNREFUSED:std::cout<<"远程主机阻绝网络连接\n";break;
+        case EFAULT:std::cout<<"内存空间访问出错\n";break;
+        case EINTR:std::cout<<"操作被信号中断\n";break;
+        case EINVAL:std::cout<<"参数无效\n";break;
+        case ENOMEM:std::cout<<"内存不足\n";break;
+        case ENOTCONN:std::cout<<"与面向连接关联的套接字尚未被连接上\n";break;
+        case ENOTSOCK:std::cout<<"sock索引的不是套接字\n";break;
+    }
+}
 
-void sendFile(int fd,FileManager &fm,ServerConnection &file_connection){
+void sendFile(int fd,ServerConnection &file_connection){
     std::string send_filename(ServerConnection::recvMsg(fd));
     ServerConnection::sendMsg(fd,std::to_string(file_connection.port));
     sockaddr*ra=new sockaddr();
-    ServerConnection::recvMsg(file_connection.fd,ra);
+    std::cout<<ServerConnection::recvMsg(file_connection.fd,ra);
     file_connection.sendFileUDP(send_filename, ra);
     delete ra;
 }
 
-void recvFile(int fd,FileManager &fm,ServerConnection &file_connection){
+void recvFile(int fd,ServerConnection &file_connection){
     std::string recv_filename(ServerConnection::recvMsg(fd));
     ServerConnection::sendMsg(fd,std::to_string(file_connection.port));
     sockaddr*ra=new sockaddr();
@@ -43,14 +59,19 @@ void recvFile(int fd,FileManager &fm,ServerConnection &file_connection){
 }
 
 //这里不使用引用的原因时是线程池绑定函数使用的std::bind，默认拷贝，线程池代码还没改改了再换引用
-void dealConnection(int fd,FileManager fm,ServerConnection file_connection){
-    static UserManager user_manager(_user_data_file);
-    std::cout<<user_manager.login("admin", "123456");
+void dealConnection(int fd,FileManager fm,ServerConnection &file_connection){
+    int id = syscall(SYS_gettid);
+    std::cout<<id<<"use"<<fd<<std::endl;
+    std::string thread_msg=std::to_string(id)+"use"+std::to_string(fd);
+    std::cout<<ServerConnection::recvMsg(fd);
     auto user_data= ServerConnection::recvMsg(fd);
+    debug_errno();
     size_t f_pos=user_data.find("%");
     size_t s_pos=user_data.find("%",f_pos+1);
-    if(user_manager.login(user_data.substr(f_pos+1,s_pos-f_pos), user_data.substr(f_pos+1))){
+    std::cout<<user_data.substr(f_pos+1,s_pos-f_pos-1)<<user_data.substr(s_pos+1)<<std::endl;
+    if(user_manager.login(user_data.substr(f_pos+1,s_pos-f_pos-1), user_data.substr(s_pos+1))){
         ServerConnection::sendMsg(fd,"correct");
+        debug_errno();
         std::vector<std::string> filelist=fm.getFilesList();
         for(auto file:filelist){
             ServerConnection::sendMsg(fd,"file:"+file);
@@ -60,15 +81,19 @@ void dealConnection(int fd,FileManager fm,ServerConnection file_connection){
         std::string msg;
         do{
             msg=ServerConnection::recvMsg(fd);
-            cmd=std::stoi(msg);
+            std::cout<<msg<<std::endl;
+            if(msg.empty())
+                cmd=0;
+            else
+                cmd=std::stoi(msg);
             switch (cmd) {
                 case CLIENT_EOF:
                 break;
                 case DOWLOAD_FILE:
-                sendFile(fd,fm,file_connection);
+                sendFile(fd,file_connection);
                 break;
                 case UPLOAD_FILE:
-                recvFile(fd, fm, file_connection);
+                recvFile(fd, file_connection);
                 break;
                 case DELETE_FILE:
                 break;
@@ -78,9 +103,11 @@ void dealConnection(int fd,FileManager fm,ServerConnection file_connection){
             }
         }while(cmd!=CLIENT_EOF);
     }else{
-        std::cout<<"byebye.\n"<<std::endl;
         ServerConnection::sendMsg(fd,"incorrect");
     }
+    
+    std::cout<<id<<"close"<<fd<<std::endl;
+    // thread_msg=std::to_string(id)+"close"+std::to_string(fd);
     close(fd);
 }
 
@@ -90,20 +117,29 @@ int main(){
 	FileManager fm;
     std::cout<<"user data init successfully.\n";
 	ServerConnection main_connection(TCP_TYPE);
-    std::vector<ServerConnection>file_connections;
+    ServerConnection *file_connections[MAX_NUM];
     int base_port=10000;
     for(int i=0;i<MAX_NUM;i++){
-        file_connections.push_back(ServerConnection(UDP_TYPE,base_port+i));
+        file_connections[i]=new ServerConnection(UDP_TYPE,base_port+i);//不能用拷贝，因为临时对象在销毁的时候会调用析构函数，造成文件描述符的关闭
+        //(后附：将析构函数中的close删除，可以使用拷贝)
     }
     int i=0;
     int fd;
+    int fds[MAX_NUM];
+    std::thread t1;
 	while(true){
-		fd=main_connection.acceptTCP();
-        // std::thread t1(dealConnection,fd,fm,file_connections[i]);
+		fds[i]=main_connection.acceptTCP();
+        std::cout<<"fd:"<<fds[i]<<std::endl;
+        // std::cout<<ServerConnection::recvMsg(fds[i]);
+        // t1=std::thread(dealConnection,fds[i],fm,*file_connections[i]);
         // t1.join();
-        dealConnection(fd,fm,file_connections[i]);
-        // pool.commit(dealConnection, fd,fm,file_connections[i]);
+        // dealConnection(fd,fm,file_connections[i]);
+        pool.commit(dealConnection, fds[i],fm,*file_connections[i]);
         i=(i+1)%MAX_NUM;
 	}
+    main_connection.close_self();
+    for(size_t i=0;i<MAX_NUM;i++){
+        file_connections[i]->close_self();
+    }
 	return 0;
 }

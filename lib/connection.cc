@@ -37,7 +37,7 @@ void Connection::sendFileUDP(std::string filename,sockaddr *ra){
 	char buf[BUFF_SIZE];
 	bzero(buf, BUFF_SIZE);
 	buf[0] = 's';
-	int res=sendto(this->fd, buf, BUFF_SIZE, 0, ra, sizeof(*ra));
+	sendto(this->fd, buf, BUFF_SIZE, 0, ra, sizeof(*ra));
 	while (infile)
 	{
 		bzero(buf, BUFF_SIZE);
