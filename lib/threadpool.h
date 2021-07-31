@@ -57,12 +57,19 @@ private:
 
 };
 
+
+template<class F,class...Args>
+void print(F f,Args...args){
+    std::cout<<"fd:"<<f<<std::endl;
+}
+
 template<class F,class...Args>
 void ThreadPool::commit(F &&f,Args&&...args){
     if(!this->_run){
         std::cout<<"thread pool is stopped.\n";
         exit(0);
     }
+    print(args...);
     using RetType=decltype(f(args...));
     auto task=std::make_shared<std::packaged_task<RetType()>>(
         std::bind(std::forward<F>(f),std::forward<Args>(args)...)

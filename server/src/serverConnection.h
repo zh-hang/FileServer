@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <fstream>
+#include <sys/syscall.h> 
 
 #include "../../lib/log.h"
 #include "../../lib/connection.h"
@@ -18,10 +19,14 @@
 class ServerConnection:public Connection{
 public:
     int port;
+    ServerConnection():Connection(){
+    }
 	ServerConnection(int type,int port=TCP_PORT);
 	~ServerConnection(){
-		close(this->fd);
 	}
+    void close_self(){
+        close(this->fd);
+    }
 	int acceptTCP();
 };
 

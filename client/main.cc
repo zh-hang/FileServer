@@ -1,3 +1,6 @@
+#include <asm-generic/errno-base.h>
+#include <asm-generic/errno.h>
+#include <cerrno>
 #include <cstddef>
 #include <fstream>
 #include <iostream>
@@ -34,9 +37,10 @@ void recvFile(int fd,std::string &address,std::vector<std::string>&fileList){
         ClientConnection::sendMsg(fd,fileList[i]);
         int port =std::stoi(ClientConnection::recvMsg(fd));
         ClientConnection fileTrans(UDP_TYPE,address,port);
-        std::cout<<"start recv file: "<<fileList[i]<<std::endl;
         ClientConnection::sendMsg(fileTrans.fd,"ready",(sockaddr*)&fileTrans.addr);
+        std::cout<<"start recv file: "<<fileList[i]<<std::endl;
         fileTrans.recvFileUDP(fileList[i]);
+        fileTrans.close_self();
     }else{
         std::cout<<"there is no such file.\n";
     }
@@ -69,6 +73,7 @@ void sendFile(int fd,std::string &address,std::vector<std::string>&fileList){
     ClientConnection fileTrans(UDP_TYPE,address,port);
     ClientConnection::sendMsg(fileTrans.fd,"ready",(sockaddr*)&fileTrans.addr);
     fileTrans.sendFileUDP(filename,(sockaddr*)&fileTrans.addr);
+    fileTrans.close_self();
 }
 
 int main(int argc, char* argv[])
@@ -82,14 +87,29 @@ int main(int argc, char* argv[])
     }
     ClientConnection conn(TCP_TYPE,address);
     std::string msg;
-    ClientConnection::sendMsg(conn.fd,msg);
     std::vector<std::string>fileList;
     std::string user_name,user_password;
     std::cout<<"please input your user name and password seperated by space.\n";
-    std::cin>>user_name>>user_password;
-    ClientConnection::sendMsg(conn.fd,"%"+user_name+"%"+user_password);
-    if(ClientConnection::recvMsg(conn.fd)!="correct"){
+    // std::cin>>user_name>>user_password;
+    user_name="admin";
+    user_password="123456";
+    msg="%"+user_name+"%"+user_password;
+    ClientConnection::sendMsg(conn.fd,msg);
+    std::cout<<msg<<std::endl;
+    msg=ClientConnection::recvMsg(conn.fd);
+    std::cout<<msg<<std::endl;
+    if(msg!="correct"){
         std::cout<<"your user name and password is incorrect."<<std::endl;
+        switch (errno) {
+            case EBADF:std::cout<<"sock不是有效的描述词\n";break;
+            case ECONNREFUSED:std::cout<<"远程主机阻绝网络连接\n";break;
+            case EFAULT:std::cout<<"内存空间访问出错\n";break;
+            case EINTR:std::cout<<"操作被信号中断\n";break;
+            case EINVAL:std::cout<<"参数无效\n";break;
+            case ENOMEM:std::cout<<"内存不足\n";break;
+            case ENOTCONN:std::cout<<"与面向连接关联的套接字尚未被连接上\n";break;
+            case ENOTSOCK:std::cout<<"sock索引的不是套接字\n";break;
+        }
         return 0;
     }
     while(1) {
@@ -107,11 +127,14 @@ int main(int argc, char* argv[])
             case CLIENT_EOF:
             break;
             case DOWLOAD_FILE:
+            ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
             recvFile(conn.fd, address, fileList);
             break;
             case UPLOAD_FILE:
+            ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
             sendFile(conn.fd, address, fileList);
             break;
+            ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
             case DELETE_FILE:
             break;
             default:
@@ -120,6 +143,6 @@ int main(int argc, char* argv[])
         }
     }while (cmd!=CLIENT_EOF);
     std::cout<<"exit.\n";
-    
+    conn.close_self();
     return 0;
 }

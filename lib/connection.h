@@ -29,10 +29,15 @@ public:
 	conn_type type;
     struct sockaddr_in addr;
 	
-	Connection(int type=TCP_TYPE);
+    Connection(){
+    }
+	Connection(int type);
 	~Connection(){
-		close(this->fd);
 	}
+    
+    void close_self(){
+        close(this->fd);
+    }
 	void sendFileUDP(std::string filename,sockaddr *ra);
 	void recvFileUDP(std::string filename);
 	void sendFileTCP();

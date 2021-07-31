@@ -21,8 +21,11 @@ public:
 	ClientConnection(int type, std::string server_addr,int port=TCP_PORT);
 	~ClientConnection()
 	{
-		close(this->fd);
 	}
+    
+    void close_self(){
+        close(this->fd);
+    }
 
 };
 
