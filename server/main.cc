@@ -134,6 +134,8 @@ int main(){
     main_connection.close_self();
     for(size_t i=0;i<MAX_NUM;i++){
         file_connections[i]->close_self();
+        delete file_connection[i];
+        file_connection[i]=nullptr;
     }
 	return 0;
 }
