@@ -79,6 +79,19 @@ void sendFile(int fd,std::string &address,std::vector<std::string>&fileList){
     fileTrans.close_self();
 }
 
+void delFile(int fd,std::vector<std::string>&fileList){
+    printFileList(fileList);
+    std::cout<<"select witch file you want to delete.\n";
+    int i;
+    std::cin>>i;
+    if(i<fileList.size()){
+        ClientConnection::sendMsg(fd,fileList[i]);
+        std::cout<<ClientConnection::recvMsg(fd);
+    }else{
+        std::cout<<"there is no such file.\n";
+    }
+}
+
 int main(int argc, char* argv[])
 {
     std::string address;
@@ -136,8 +149,9 @@ int main(int argc, char* argv[])
             ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
             sendFile(conn.fd, address, fileList);
             break;
-            ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
             case DELETE_FILE:
+            ClientConnection::sendMsg(conn.fd,std::to_string(cmd));
+            delFile(fd,fileList);
             break;
             default:
             std::cout<<"unrecognized command.\n";

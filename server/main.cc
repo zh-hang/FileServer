@@ -12,6 +12,7 @@
 #include <fstream>
 #include <map>
 #include <sys/syscall.h> 
+#include <cstdio>
 
 #include "src/serverConnection.h"
 #include "src/userManager.h"
@@ -58,6 +59,12 @@ void recvFile(int fd,ServerConnection &file_connection){
     delete ra;
 }
 
+void delFile(int fd,ServerConnection &file_connection){
+	std::string del_filename(ServerConnection:recvMsg(fd));
+	int res=remove(del_filename.c_str());
+	ServerConnection::sendMsg(fd,res?"success":"fail"));	
+}
+
 //这里不使用引用的原因时是线程池绑定函数使用的std::bind，默认拷贝，线程池代码还没改改了再换引用
 void dealConnection(int fd,FileManager fm,ServerConnection &file_connection){
     auto user_data= ServerConnection::recvMsg(fd);
@@ -90,6 +97,7 @@ void dealConnection(int fd,FileManager fm,ServerConnection &file_connection){
                 recvFile(fd, file_connection);
                 break;
                 case DELETE_FILE:
+                delFile(fd,file_connnection);
                 break;
                 default:
                 cmd=CLIENT_EOF;
