@@ -286,3 +286,13 @@ Connection的子类。
 - [C++11线程池实现](https://www.cnblogs.com/lzpong/p/6397997.html)
 - [根据linux内核源码查找recv返回EBADF(errno 9)的原因](https://www.cnblogs.com/james1207/p/3400192.html)
 
+## 注意点
+
+- 编码规范：类型+名称
+- 资源的申请和释放
+- 尽量避免使用阻塞的函数（如果使用应加上超时时限）
+- 登录过程中的密码处理
+- 每一个连接都使用session来处理
+- 注意I/O的并发性，避免磁盘I/O和网络I/O的串行
+- 操作符和操作函数的关系处理：使用key-value的模式
+- 使用reactor模式来处理消息
