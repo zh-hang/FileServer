@@ -31,10 +31,11 @@ typedef int conn_type;
 class Connection{
 protected:
 	int fd;
-    struct sockaddr_in addr;
     int port;
 public:
 	
+    struct sockaddr_in addr;
+
     Connection(){
     }
 	~Connection(){
@@ -44,8 +45,12 @@ public:
         return this->fd;
     }
 
-    struct sockaddr_in getAddr(){
-        return this->addr;
+    int getPort(){
+        return this->port;
+    }
+
+    void setAddr(sockaddr_in addr){
+        this->addr=std::move(addr);
     }
 
 	void closeSelf(){
@@ -76,7 +81,7 @@ class TCPConnection:public Connection{
 		this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
 		this->addr.sin_port = htons(TCP_PORT);
     }
-    TCPConnection(char*addr){
+    TCPConnection(const char*addr){
         init();
         this->port=TCP_PORT;
 		this->addr.sin_addr.s_addr = inet_addr(addr);
@@ -88,7 +93,7 @@ class TCPConnection:public Connection{
 		this->addr.sin_addr.s_addr = htonl(INADDR_ANY);
 		this->addr.sin_port = htons(port);
     }
-    TCPConnection(char*addr,int port){
+    TCPConnection(const char*addr,int port){
         init();
         this->port=port;
 		this->addr.sin_addr.s_addr = inet_addr(addr);
@@ -120,7 +125,7 @@ class UDPConnection:public Connection{
 		this->addr.sin_port = htons(port);
     }
 
-    UDPConnection(char*addr,int port){
+    UDPConnection(const char*addr,int port){
         init();
         this->port=port;
 		this->addr.sin_addr.s_addr = inet_addr(addr);
