@@ -6,6 +6,8 @@
 #include <fstream>
 #include <string.h>
 #include <thread>
+#include <ctime>
+#include <vector>
 
 class test{
     public:
@@ -39,11 +41,41 @@ auto initUser(std::string user_data_file)->std::map<std::string, std::string>{
     return user_data;
 }
 
+class A{
+    public:
+    std::string a;
+    A(){}
+    A(A&&temp){
+        a=std::move(temp.a);
+    }
+    A(A &temp){
+        a=temp.a;
+    }
+};
+
 int main(){
-    int a(1),b(2),c(3);
-    test t;
-    std::thread t1(foo,a,std::ref(b),std::ref(c));
-    t1.join();
+    A a;
+    a.a="asdfasdf";
+    std::string str="123456";
+    std::vector<std::string>v(100);
+    for(int i=0;i<100;i++){
+        v[i]="123456";
+    }
+    std::cout<<time(0)<<std::endl;
+    for(int i=0;i<1000000000;i++){
+        std::string str1=str;
+    }
+    std::cout<<time(0)<<std::endl;
+
+    for(int i=0;i<1000000000;i++){
+        std::string str1=std::move(str);
+    }
+    std::cout<<time(0)<<std::endl;
+
+    // int a(1),b(2),c(3);
+    // test t;
+    // std::thread t1(foo,a,std::ref(b),std::ref(c));
+    // t1.join();
     // t.print(foo,a,b,c);
     // auto user=initUser("user.txt");
     // for(auto u:user){
