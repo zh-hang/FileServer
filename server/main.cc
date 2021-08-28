@@ -25,7 +25,7 @@
 
 
 static std::string _user_data_file="user.txt";
-static UserManager user_manager(_user_data_file);
+static UserManager *user_manager=UserManager::getManager(_user_data_file);
 extern ServerOpt server_opt[];
 
 //这里不使用引用的原因时是线程池绑定函数使用的std::bind，默认拷贝，线程池代码还没改改了再换引用
@@ -34,7 +34,7 @@ void dealConnection(int fd,FileManager fm,UDPConnection &file_connection){
     size_t f_pos=user_data.find("%");
     size_t s_pos=user_data.find("%",f_pos+1);
     // std::cout<<user_data.substr(f_pos+1,s_pos-f_pos-1)<<user_data.substr(s_pos+1)<<std::endl;
-    if(user_manager.login(user_data.substr(f_pos+1,s_pos-f_pos-1), user_data.substr(s_pos+1))){
+    if(user_manager->login(user_data.substr(f_pos+1,s_pos-f_pos-1), user_data.substr(s_pos+1))){
         Connection::sendMsg(fd,"correct");
         std::vector<std::string> filelist=fm.getFilesList();
         for(auto file:filelist){
