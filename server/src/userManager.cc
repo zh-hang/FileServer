@@ -1,7 +1,7 @@
 #include "userManager.h"
 
 std::map<std::string, std::string> UserManager::_user_data;
-UserManager *UserManager::_my_instance = nullptr;
+UserManager::UserManagerPtr UserManager::_my_instance = nullptr;
 std::mutex UserManager::_lock;
 
 UserManager::UserManager(std::string user_data_file) {
@@ -17,6 +17,4 @@ UserManager::UserManager(std::string user_data_file) {
     }
 }
 UserManager::~UserManager() {
-    delete _my_instance;
-    _my_instance = nullptr;
 }

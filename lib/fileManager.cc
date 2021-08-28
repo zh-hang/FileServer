@@ -1,5 +1,10 @@
 #include "fileManager.h"
 
+
+std::vector<std::string> FileManager::_files_list;
+std::mutex FileManager::_lock;
+FileManager::FileManagerPtr FileManager::_my_instance=nullptr;
+
 FileManager::FileManager(){
 	std::string file_path(getcwd(NULL,0));
 	if(file_path.length()==0){
@@ -14,13 +19,17 @@ FileManager::FileManager(){
     auto dirp=readdir(dir);
 	while(dirp != nullptr){
         if(dirp->d_type==DT_REG)
-    		this->files_list.push_back(dirp->d_name);
+    		_files_list.emplace_back(dirp->d_name);
         dirp=readdir(dir);
 	}
 	closedir(dir);
     std::cout<<std::endl<<"find file: \n";
-    for(auto file:this->files_list){
+    for(auto file:_files_list){
         std::cout<<file<<" ";
     }
     std::cout<<std::endl;
+}
+
+FileManager::~FileManager(){
+
 }

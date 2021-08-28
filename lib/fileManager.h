@@ -3,7 +3,8 @@
 #include <iostream>
 #include <unistd.h>
 #include <dirent.h>
-#include <dirent.h>
+#include <mutex>
+#include <memory>
 
 #include "log.h"
 
@@ -11,18 +12,32 @@
 #define FILE_MANAGER_H
 
 class FileManager{
-private:
-	std::vector<std::string> files_list;
 public:
+	using FileManagerPtr=std::shared_ptr<FileManager>;
+
+    static FileManagerPtr getFileManager(){
+        _lock.lock();
+        if(_my_instance==nullptr)
+            _my_instance=FileManagerPtr(new FileManager());
+        _lock.unlock();
+        return _my_instance;
+    }
+
+	static std::vector<std::string> getFilesList(){
+		return _files_list;
+	}
+	
+	static std::string getFileName(int pos){
+        if(pos>_files_list.size())
+            return NULL;
+		return _files_list[pos];
+	}
+
+private:
+	static std::vector<std::string> _files_list;
+    static std::mutex _lock;
+    static FileManagerPtr _my_instance;
 	FileManager();
-	~FileManager(){}
-	
-	std::vector<std::string> getFilesList(){
-		return this->files_list;
-	}
-	
-	std::string getFileName(int pos){
-		return this->files_list[pos];
-	}
+	~FileManager();
 };
 #endif
