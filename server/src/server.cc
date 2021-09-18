@@ -1,7 +1,7 @@
 #include "server.h"
 
 
-ServerOpt server_opt[] = {
+static ServerOpt server_opt[] = {
     {DOWLOAD_FILE,sendFile},
     {UPLOAD_FILE,recvFile},
     {DELETE_FILE,delFile},

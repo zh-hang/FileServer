@@ -38,7 +38,8 @@ public:
 
     Connection(){
     }
-	~Connection(){
+	virtual ~Connection(){
+        close(this->fd);
 	}
     
     int getFd(){
@@ -100,6 +101,10 @@ class TCPConnection:public Connection{
 		this->addr.sin_port = htons(port);
     }
 
+    ~TCPConnection(){
+        close(this->fd);
+    }
+
     void TCPListen();
     int TCPAccept();
 
@@ -130,6 +135,10 @@ class UDPConnection:public Connection{
         this->port=port;
 		this->addr.sin_addr.s_addr = inet_addr(addr);
 		this->addr.sin_port = htons(port);
+    }
+
+    ~UDPConnection(){
+        close(this->fd);
     }
 
 	void sendFile(std::string filename,sockaddr *ra);
