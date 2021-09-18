@@ -30,52 +30,7 @@ static UserManager::UserManagerPtr user_manager = UserManager::getManager(_user_
 extern ServerOpt server_opt[];
 FileManager::FileManagerPtr fm = FileManager::getFileManager();
 
-//这里不使用引用的原因时是线程池绑定函数使用的std::bind，默认拷贝，线程池代码还没改改了再换引用
-void dealConnection(int fd, UDPConnection &file_connection)
-{
-    auto user_data = Connection::recvMsg(fd);
-    size_t f_pos = user_data.find("%");
-    size_t s_pos = user_data.find("%", f_pos + 1);
-    // std::cout<<user_data.substr(f_pos+1,s_pos-f_pos-1)<<user_data.substr(s_pos+1)<<std::endl;
-    if (user_manager->login(user_data.substr(f_pos + 1, s_pos - f_pos - 1), user_data.substr(s_pos + 1)))
-    {
-        Connection::sendMsg(fd, "correct");
-        std::vector<std::string> filelist = fm->getFilesList();
-        for (auto file : filelist)
-        {
-            Connection::sendMsg(fd, "file:" + file);
-        }
-        Connection::sendMsg(fd, "finish");
-        CLIENT_CMD cmd;
-        std::string msg;
-        do
-        {
-            msg = Connection::recvMsg(fd);
-            std::cout << msg << std::endl;
-            if (msg.empty())
-                cmd = CLIENT_EOF;
-            else
-                cmd = std::stoi(msg);
-            auto *op = server_opt;
-            while (op->op)
-            {
-                if (cmd == op->op)
-                {
-                    op->opfun(fd, file_connection);
-                    break;
-                }
-                op++;
-            }
-        } while (cmd != CLIENT_EOF);
-    }
-    else
-    {
-        Connection::sendMsg(fd, "incorrect");
-    }
-    close(fd);
-}
-
-void login(EpollControllor &controllor,int fd)
+void login(EpollControllor &controllor, int fd)
 {
     auto user_data = Connection::recvMsg(fd);
     size_t f_pos = user_data.find("%");
@@ -158,7 +113,7 @@ int main()
             close(curr_fd);
             continue;
         }
-        pool.commit(login,controllor,fd);
+        pool.commit(login, controllor, fd);
     }
     main_connection.closeSelf();
     distributor_thread.join();
