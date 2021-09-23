@@ -9,7 +9,7 @@ public:
     void lock()
     {
         bool expect = false;
-        while (!flag_.compare_exchange_weak(expect, true))
+        while (!flag_.compare_exchange_strong(expect, true))
         {
             expect = false;
         }
