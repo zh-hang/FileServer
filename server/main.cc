@@ -39,12 +39,12 @@ void login(EpollControllor &controllor, int fd)
     if (user_manager->login(user_data.substr(f_pos + 1, s_pos - f_pos - 1), user_data.substr(s_pos + 1)))
     {
         Connection::sendMsg(fd, "correct");
-        std::vector<std::string> filelist = fm->getFilesList();
-        for (auto file : filelist)
-        {
-            Connection::sendMsg(fd, "file:" + file);
-        }
-        Connection::sendMsg(fd, "finish");
+        // std::vector<std::string> filelist = fm->getFilesList();
+        // for (auto file : filelist)
+        // {
+        //     Connection::sendMsg(fd, "file:" + file);
+        // }
+        // Connection::sendMsg(fd, "finish");
         controllor.addFd(fd);
     }
     else
